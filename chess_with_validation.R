@@ -1,6 +1,22 @@
 
 # Read in the data
 raw.train=read.csv("train.csv")
+
+raw.train$r3r2delta = raw.train$r3- raw.train$r2
+raw.train$r2r1delta = raw.train$r2 - raw.train$r1
+raw.train$r3quickdelta = raw.train$r3 - raw.train$r.quick
+
+mean.r = rep(0,nrow(raw.train))
+for(i in 1:nrow(raw.train)){
+  #only take avg over non-NA rankings
+  mask = is.na(raw.train[i,11:13])
+  mean.r[i] = mean(raw.train[i,11:13][!mask])
+} 
+mean.r
+raw.train$mean.r = mean.r
+raw.train
+
+
 # split into train/valid
 set.seed(2)
 # 80% training, 20% valid
@@ -59,6 +75,7 @@ na.convert.mean = function (frame)
 }
 
 
+
 # mark categorical data as factor
 train$lapsed = as.numeric(train$lapsed) - 1
 train$sex = factor(train$sex)
@@ -69,6 +86,7 @@ train$mem_mag2 = as.factor(train$mem_mag2)
 train$hasemail = as.factor(train$hasemail)
 train$extra = as.factor(train$extra)
 train$intl = as.factor(train$intl)
+
 train.na = na.convert.mean(train)
 
 # Seem to be some extreme values here, can take sqrt of data
@@ -79,17 +97,27 @@ train.na$medevents.SQ = sqrt(train.na$medevents)
 train.na$slowevents.SQ = sqrt(train.na$slowevents)
 train.na$nfloor.SQ =  sqrt(train.na$nfloor)
 
+factor.mask = c(3,4,6,8,9,10,19,15,16,28,29,30,31,32,33,34,35,36,37)
+train.na[,-factor.mask]
+train.na.means = apply(train.na[,-factor.mask],2,mean)
+train.na.means
+
+
 #install.packages('gam')
 library(gam)
 
 #train.na$lapsed = train.na$lapsed - 1
-mod.glm = gam(lapsed ~ lo(memmonths,r3,age,nregions,memmonths,r1,r2, r3,r.quick,allgames1yr,allgames5yr,fastevents,medevents,slowevents,nfloor)+ sex +region + memtype +mem_mag1 + mem_mag2 + hasemail + extra + r.intl + r.intl.na + r.quick.na + r3.na + age.na, family = binomial(link = "cloglog"),data = train.na)
+mod = gam(lapsed ~ s(age)+s(nregions)+s(memmonths)+s(r1)+s(r2)+ s(r3)+s(r.quick)+s(mean.r)+s(allgames1yr.SQ)+s(allgames5yr.SQ)+s(fastevents.SQ)+s(medevents.SQ)+s(slowevents.SQ)+s(nfloor.SQ)+s(r3quickdelta)+s(r3r2delta)+s(r2r1delta)+ sex +region + memtype +mem_mag1 + mem_mag2 + hasemail + extra + r.intl + r.intl.na + r.quick.na + r3.na + r2.na + r1.na + age.na + r3r2delta.na + r2r1delta.na + mean.r.na + r3quickdelta.na, family = binomial, data = train.na)
 
 
 
-summary(mod.glm)
+
+
+
+
+summary(mod)
 # anova test with linear terms only
-drop1(mod.glm, test = "Chisq")
+drop1(mod, test = "Chisq")
 mod.glm <- update(mod.glm, .~. - )
 drop1(mod.glm, test = "LRT")
 mod.glm <- update(mod.glm, .~. - )
@@ -106,14 +134,14 @@ mod.glm <- update(mod.glm, .~. - )
 drop1(mod.glm, test = "LRT")
 
 # Plot Residuals (Jack Knife and Binned Avg.) - looking for non linearities
-sum((residuals(mod.glm, type="deviance"))^2)
+sum((residuals(mod, type="deviance"))^2)
 par(mfrow = c(1,2))
-plot(mod.glm$fitted.values, residuals(mod.glm, type="deviance"),
+plot(mod$fitted.values, residuals(mod, type="deviance"),
      xlab="fitted probabilities",
      ylab="deviance residuals")
 
 library(arm)
-binnedplot(mod.glm$fitted.values, rstudent(mod.glm),
+binnedplot(mod$fitted.values, rstudent(mod),
            xlab="Averaged fitted probabilities",
            ylab="Averaged jackknifed residuals")
 
