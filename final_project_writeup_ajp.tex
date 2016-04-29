@@ -59,7 +59,7 @@ Here we outline the sequence of models we built and key insights that led us to 
   \item
   We had observed that interaction terms were able to increase performance, but we hypothesized if a linear relationship between a predictor and the response was the most effective way to model the data. Thus, we felt it would be advantageous to instead use Generalized Additive Models (GAM), which we calculate a smoothing spline of quantitative variables, revealing any nonlinearities.  We again leveraged likelihood ratio tests to determine which predictors and smooths could be removed and which were statistically significant. When tested on 50\% of the test set, this model achieved a discrepancy of 0.54760, an improvement of 0.01769 over the previous model. 
   \item
-  While our GAM approach was successful, we wanted to attempt to leverage the smoothers fit by the GAM to inform how we would fit a GLM with manual basis transformations of our predictor variables. Specifically, using smoothers reduce some of your data, thus if one knows the true transformation of the data (e.g., linear or quadratic), one should use that transformation using a GLM. In this way, the full data set would be used and we wouldn't be losing any information. Thus, to determine what non-linearities exist, we plotted the smoothing spline calculated for each quantitative variable and determined if the relationship was constant, linear, quadratic, or cubic. In Figure 2, we see that age, for example, appears to follow a cubic trend, thus we created new features that included age squared and age cubed (where we made sure to subtract out the mean of the predictor first to limit any unintended collinearity). Repeating this process for the other predictors that appeared to exhibit a non linear relationship, we built a logistic regression model that included single, pairwise, and triplet-wise interactions of all of our terms from the ground up using likelihood ratio tests. When tested on 50\% of the test set, this model achieved a discrepancy of 0.58, which was not an improvement. This is likely due to our interpretation of the smoothing splines to not be exactly correct, and thus the smooths themselves in a GAM were still more effective than our interpretation at this time.
+  While our GAM approach was successful, we wanted to attempt to leverage the smoothers fit by the GAM to inform how we would fit a GLM with manual basis transformations of our predictor variables. Specifically, using smoothers reduce some of your data, thus if one knows the true transformation of the data (e.g., linear or quadratic), one should use that transformation using a GLM. In this way, the full data set would be used and we wouldn't be losing any information. Thus, to determine what non-linearities exist, we plotted the smoothing spline calculated for each quantitative variable and determined if the relationship was constant, linear, quadratic, or cubic. In Figure 2, we see that age, for example, appears to follow a cubic trend, thus we created new features that included age squared and age cubed (where we made sure to subtract out the mean of the predictor first to limit any unintended collinearity). Repeating this process for the other predictors that appeared to exhibit a non linear relationship, we built a logistic regression model that included single, pairwise, and triplet-wise interactions of all of our terms from the ground up using likelihood ratio tests. There are vast number of interaction combinations that we could have attempted. However, since we were working with limited time, we tried 25 different combinations across the predictors we felt were most influential. In this way, we sought to gain further predictive power from our best predictors. When tested on 50\% of the test set, this model achieved a discrepancy of 0.58, which was not an improvement. This is likely due to our interpretation of the smoothing splines to not be exactly correct, and thus the smooths themselves in a GAM were still more effective than our interpretation at this time.
   
     \item
   Our final approaches moved away from GLMs and GAMs altogether. We ran a random forest, tuned using cross validation, and a Neural Network. The Neural Network.... When tested on 50\% of the test set, this model achieved a discrepancy of 0.54, which was not an improvement. 
@@ -76,7 +76,7 @@ Here we outline the sequence of models we built and key insights that led us to 
 \section*{Analysis of Final Models}
 We decided to move forward with our third and fifth models outlined above. First, we retrained our models on the full training set (reincorporating validation data into training data) so that we could leverage all the information available to us. Further, we ran some diagnostics to see if we have a model with a good fit. First, since the dispersion parameter for the binomial family is taken to be equal to 1, we can compare the residual deviance divided by the degrees of freedom and compare that value to the dispersion parameter. If it is close to 1, then we have a relatively good fitting model. In the included summary of our GAM model below, we see the fraction described is equal to 47163/43329 = 1.08, which is very close to one. Unfortunately, the coefficients of a GAM that incorporate smoothers are not interpretable like they typically are when using a GLM. 
 
-We also plotted Cook's distances to see if any influential data points existed. From Fig 3, we see that no value is greater than 1, indicating that no influential points appear to exist. Another diagnostic we used leveraged the residuals of the data set. Specifically, we plotted Jack Knife residuals and Binned Average Residuals (Fig 4 and 5). From my Jack Knife plot, we see some observations are above and below 2 and -2. This indicates a poor fit. Since teh stripe shape is an artefact of our binary data, we also plotted binned average residuals. Here, we aim to have no non linearities present in the plot. However, from the fiture we see a trend that is not a horizontal line. Thus, this indicates we may have have a perfectly fitting model. 
+We also plotted Cook's distances to see if any influential data points existed. From Fig 3, we see that no value is greater than 1, indicating that no influential points appear to exist. Another diagnostic we used leveraged the residuals of the data set. Specifically, we plotted Jack Knife residuals and Binned Average Residuals (Fig 4). From my Jack Knife plot, we see some observations are above and below 2 and -2. This indicates a poor fit. Since teh stripe shape is an artefact of our binary data, we also plotted binned average residuals. Here, we aim to have no non linearities present in the plot. However, from the fiture we see a trend that is not a horizontal line. Thus, this indicates we may have have a perfectly fitting model. 
 
 \lstinputlisting[float=h,frame=tb,caption=GAM Model Summary,label=zebra, basicstyle=\tiny]{GAMsummary.txt}
 
@@ -84,25 +84,23 @@ We also plotted Cook's distances to see if any influential data points existed. 
   \FloatBarrier
   \begin{figure}[!ht]
     \centering
-    \includegraphics[scale=.5]{pp33.png}
+    \includegraphics[scale=.42]{pp33.png} 
     \caption{Cook's Distances}
   \end{figure}
   \FloatBarrier
+  
   \FloatBarrier
   \begin{figure}[!ht]
     \centering
-    \includegraphics[scale=.5]{pp11.png}
-    \caption{Jack Knife Residuals}
+    \includegraphics[scale=.5]{pp11.png} \includegraphics[scale=.5]{pp22.png}
+
+    \caption{Jack Knife and Binned Average Residuals}
   \end{figure}
   \FloatBarrier
 
-\FloatBarrier
-  \begin{figure}[!ht]
-    \centering
-    \includegraphics[scale=.5]{pp22.png}
-    \caption{Binned Average Residuals}
-  \end{figure}
-  \FloatBarrier
+
+\section*{Discussion}
+A critical evaluation of your overall approach can be insightful as well. What aspects of your model- ing attempts did you expect would substantially improve predictive accuracy, but under-performed relative to what you anticipated? Where did you realize the greatest gains? In retrospect, what de- cisions could have made the process more efficient?
 
 \section*{Next Steps}
 If we had additional time, we would have liked to run a RandomForest. We were able to run a preliminary model, which performed quite well, but we did run into a few snags. For example, we were unable to run a random Forest on the region predictor. this was unfortunate, as the region predictor appeared to be statistically significant in our other models. That said, our cross-validation technique was very helpful in tuning the number of trees in the forest before predicting on the test set (to avoid overfitting). Had we had more time to learn more about the benefits of Random Forests, we would have liked to further studied these and apply them to our modeling problem.
