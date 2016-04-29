@@ -1,0 +1,68 @@
+Call: gam(formula = lapsed ~ s(age) + sex + region + memtype + s(memmonths) + 
+    mem_mag1 + mem_mag2 + hasemail + s(r1) + s(r.quick) + extra + 
+    intl + s(r3r2delta) + s(r3quickdelta) + s(mean.r) + r1.na + 
+    r3.na + s(allgames1yr.SQ) + s(fastevents.SQ) + 
+    s(medevents.SQ), family = binomial, data = train.na)
+Deviance Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.6126 -0.9697  0.5457  0.8427  2.7014 
+
+(Dispersion Parameter for binomial family taken to be 1)
+
+    Null Deviance: 58278.21 on 43435 degrees of freedom
+Residual Deviance: 47163.08 on 43329 degrees of freedom
+AIC: 47377.08 
+
+Number of Local Scoring Iterations: 6 
+
+Anova for Parametric Effects
+                     Df Sum Sq Mean Sq   F value    Pr(>F)    
+s(age)                1    605  604.87  622.2623 < 2.2e-16 ***
+sex                   2    277  138.60  142.5847 < 2.2e-16 ***
+region               54    176    3.27    3.3612 1.179e-15 ***
+memtype               2     83   41.53   42.7266 < 2.2e-16 ***
+s(memmonths)          1    600  599.54  616.7800 < 2.2e-16 ***
+mem_mag1              1     64   64.04   65.8776 4.923e-16 ***
+mem_mag2              1      8    7.60    7.8138 0.0051871 ** 
+hasemail              1    927  927.04  953.7006 < 2.2e-16 ***
+s(r1)                 1    403  402.62  414.2009 < 2.2e-16 ***
+s(r.quick)            1    663  663.18  682.2530 < 2.2e-16 ***
+extra                 1     14   13.72   14.1142 0.0001723 ***
+intl                  1    544  544.26  559.9103 < 2.2e-16 ***
+s(r3r2delta)          1    381  381.27  392.2354 < 2.2e-16 ***
+s(r3quickdelta)       1     11   11.30   11.6294 0.0006498 ***
+s(mean.r)             1      9    9.45    9.7250 0.0018189 ** 
+r1.na                 1     25   25.00   25.7154 3.973e-07 ***
+r3.na                 1    928  927.68  954.3649 < 2.2e-16 ***
+s(allgames1yr.SQ)     1   1436 1436.36 1477.6741 < 2.2e-16 ***
+s(fastevents.SQ)      1     26   25.81   26.5509 2.578e-07 ***
+s(medevents.SQ)       1     10   10.20   10.4939 0.0011986 ** 
+Residuals         43329  42118    0.97                        
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Anova for Nonparametric Effects
+                  Npar Df Npar Chisq    P(Chi)    
+(Intercept)                                       
+s(age)                  3    1242.77 < 2.2e-16 ***
+sex                                               
+region                                            
+memtype                                           
+s(memmonths)            3      62.59 1.642e-13 ***
+mem_mag1                                          
+mem_mag2                                          
+hasemail                                          
+s(r1)                   3       7.55 0.0563010 .  
+s(r.quick)              3       9.96 0.0189212 *  
+extra                                             
+intl                                              
+s(r3r2delta)            3      20.94 0.0001081 ***
+s(r3quickdelta)         3       0.82 0.8447658    
+s(mean.r)               3      27.26 5.205e-06 ***
+r1.na                                             
+r3.na                                                             
+s(allgames1yr.SQ)       3     251.39 < 2.2e-16 ***
+s(fastevents.SQ)        3       3.51 0.3190084    
+s(medevents.SQ)         3      10.66 0.0136834 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
