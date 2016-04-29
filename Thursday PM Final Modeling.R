@@ -5,8 +5,8 @@ test=read.csv("test.csv")
 raw.train$r3r2delta = raw.train$r3- raw.train$r2
 raw.train$r2r1delta = raw.train$r2 - raw.train$r1
 raw.train$r3quickdelta = raw.train$r3 - raw.train$r.quick
-
 mean.r = rep(0,nrow(raw.train))
+
 for(i in 1:nrow(raw.train)){
   #only take avg over non-NA rankings
   mask = is.na(raw.train[i,11:13])
@@ -14,9 +14,8 @@ for(i in 1:nrow(raw.train)){
 } 
 mean.r
 raw.train$mean.r = mean.r
-raw.train
 
-#train = raw.train
+train = raw.train
 # split into train/valid
 set.seed(2)
 # 80% training, 20% valid
@@ -154,7 +153,6 @@ train.na$r2r1delta.sq = (train.na$r2r1delta - mean(train.na$r2r1delta))^2
 train.na$r3r2delta.sq = (train.na$r3r2delta - mean(train.na$r3r2delta))^2
 train.na$age.sq = (train.na$age - mean(train.na$age))^2
 train.na$age.cu = (train.na$age - mean(train.na$age))^3
-names(train.na)
 
 # fit all single interactions, and drop 1 until best single interaction model found
 
@@ -194,9 +192,43 @@ mod15 = update(mod, .~. + hasemail:mem_mag1)
 mod16 = update(mod, .~. + region:age)
 mod17 = update(mod, .~. + region:allgames1yr.SQ)
 mod18 = update(mod, .~. + region:hasemail)
+mod19= update(mod, .~. + age.sq:allgames1yr.SQ:hasemail)
+mod20= update(mod, .~. + age:age.sq:age.cu)
+mod21= update(mod, .~. + mean.r:fastevents.SQ)
+mod22= update(mod, .~. + intl:mean.r)
+mod23= update(mod, .~. + intl:age.cu:age.sq)
+mod24=update(mod, .~. + memmonths:intl)
+mod25=update(mod,.~. + memmonths:hasemail:intl)
 # 
+anova(mod,mod1,mod2,mod3,mod4,mod5,mod6,mod7,mod8,mod9,mod10,mod11,mod12,mod13,mod14,mod15,mod16,mod17,mod18,mod19,mod20,mod21,mod22,mod23,mod24,mod25,test="Chi")
 # 
-anova(mod,mod1,mod2,mod3,mod4,mod5,mod6,mod7,mod8,mod9,mod10,mod11,mod12,mod13,mod14,mod15,mod16,mod17,mod18,test="Chi")
+mod1 = update(mod16, .~. + allgames1yr.SQ:age.sq)
+mod2 = update(mod16, .~. + allgames1yr.SQ:age.cu)
+mod3 = update(mod16, .~. + allgames1yr.SQ:memmonths)
+mod4 = update(mod16, .~. + allgames1yr.SQ:memtype)
+mod5 = update(mod16, .~. + allgames1yr.SQ:mem_mag1)
+mod6 = update(mod16, .~. + allgames1yr.SQ:hasemail)
+mod7 = update(mod16, .~. + age.sq:age.sq)
+mod8 = update(mod16, .~. + age.sq:age.cu)
+mod9 = update(mod16, .~. + age.sq:memmonths)
+mod10 = update(mod16, .~. + age.sq:memtype)
+mod11 = update(mod16, .~. + age.sq:mem_mag1)
+mod12 = update(mod16, .~. + age.sq:hasemail)
+mod13 = update(mod16, .~. + hasemail:memmonths)
+mod14 = update(mod16, .~. + hasemail:memtype)
+mod15 = update(mod16, .~. + hasemail:mem_mag1)
+#mod16 = update(mod16, .~. + region:age)
+mod17 = update(mod16, .~. + region:allgames1yr.SQ)
+mod18 = update(mod16, .~. + region:hasemail)
+mod19= update(mod16, .~. + age.sq:allgames1yr.SQ:hasemail)
+mod20= update(mod16, .~. + age:age.sq:age.cu)
+mod21= update(mod16, .~. + mean.r:fastevents.SQ)
+mod22= update(mod16, .~. + intl:mean.r)
+mod23= update(mod16, .~. + intl:age.cu:age.sq)
+mod24=update(mod16, .~. + memmonths:intl)
+mod25=update(mod16,.~. + memmonths:hasemail:intl)
+# 
+anova(mod16,mod1,mod2,mod3,mod4,mod5,mod6,mod7,mod8,mod9,mod10,mod11,mod12,mod13,mod14,mod15,mod17,mod18,mod19,mod20,mod21,mod22,mod23,mod24,mod25,test="Chisq")
 # 
 mod1 = update(mod8, .~. + allgames1yr.SQ:age.sq)
 mod2 = update(mod8, .~. + allgames1yr.SQ:age.cu)
@@ -213,79 +245,106 @@ mod12 = update(mod8, .~. + age.sq:hasemail)
 mod13 = update(mod8, .~. + hasemail:memmonths)
 mod14 = update(mod8, .~. + hasemail:memtype)
 mod15 = update(mod8, .~. + hasemail:mem_mag1)
-mod16 = update(mod8, .~. + region:age)
+#mod16 = update(mod8, .~. + region:age)
 mod17 = update(mod8, .~. + region:allgames1yr.SQ)
 mod18 = update(mod8, .~. + region:hasemail)
-# 
-anova(mod8,mod1,mod2,mod3,mod4,mod5,mod6,mod7,mod9,mod10,mod11,mod12,mod13,mod14,mod15,mod16,mod17,mod18,test="Chi")
+mod19= update(mod8, .~. + age.sq:allgames1yr.SQ:hasemail)
+mod20= update(mod8, .~. + age:age.sq:age.cu)
+mod21= update(mod8, .~. + mean.r:fastevents.SQ)
+mod22= update(mod8, .~. + intl:mean.r)
+mod23= update(mod8, .~. + intl:age.cu:age.sq)
+mod24= update(mod8, .~. + memmonths:intl)
+mod25= update(mod8,.~. + memmonths:hasemail:intl)
 
-#mod1 = update(mod1, .~. + allgames1yr.SQ:age.sq)
-mod2 = update(mod1, .~. + allgames1yr.SQ:age.cu)
-mod3 = update(mod1, .~. + allgames1yr.SQ:memmonths)
-mod4 = update(mod1, .~. + allgames1yr.SQ:memtype)
-mod5 = update(mod1, .~. + allgames1yr.SQ:mem_mag1)
-mod6 = update(mod1, .~. + allgames1yr.SQ:hasemail)
-mod7 = update(mod1, .~. + age.sq:age.sq)
-#mod8 = update(mod1, .~. + age.sq:age.cu)
-mod9 = update(mod1, .~. + age.sq:memmonths)
-mod10 = update(mod1, .~. + age.sq:memtype)
-mod11 = update(mod1, .~. + age.sq:mem_mag1)
-mod12 = update(mod1, .~. + age.sq:hasemail)
-mod13 = update(mod1, .~. + hasemail:memmonths)
-mod14 = update(mod1, .~. + hasemail:memtype)
-mod15 = update(mod1, .~. + hasemail:mem_mag1)
-mod16 = update(mod1, .~. + region:age)
-mod17 = update(mod1, .~. + region:allgames1yr.SQ)
-mod18 = update(mod1, .~. + region:hasemail)
+anova(mod8,mod1,mod2,mod3,mod4,mod5,mod6,mod7,mod9,mod10,mod11,mod12,mod13,mod14,mod15,mod17,mod18,mod19,mod20,mod21,mod22,mod23,mod24,mod25,test="Chisq")
 
-anova(mod1,mod2,mod3,mod4,mod5,mod6,mod7,mod9,mod10,mod11,mod12,mod13,mod14,mod15,mod16,mod17,mod18,test="Chi")
+mod1 = update(mod17, .~. + allgames1yr.SQ:age.sq)
+mod2 = update(mod17, .~. + allgames1yr.SQ:age.cu)
+mod3 = update(mod17, .~. + allgames1yr.SQ:memmonths)
+mod4 = update(mod17, .~. + allgames1yr.SQ:memtype)
+mod5 = update(mod17, .~. + allgames1yr.SQ:mem_mag1)
+mod6 = update(mod17, .~. + allgames1yr.SQ:hasemail)
+mod7 = update(mod17, .~. + age.sq:age.sq)
+#mod8 = update(mod17, .~. + age.sq:age.cu)
+mod9 = update(mod17, .~. + age.sq:memmonths)
+mod10 = update(mod17, .~. + age.sq:memtype)
+mod11 = update(mod17, .~. + age.sq:mem_mag1)
+mod12 = update(mod17, .~. + age.sq:hasemail)
+mod13 = update(mod17, .~. + hasemail:memmonths)
+mod14 = update(mod17, .~. + hasemail:memtype)
+mod15 = update(mod17, .~. + hasemail:mem_mag1)
+#mod16 = update(mod17, .~. + region:age)
+#mod17 = update(mod17, .~. + region:allgames1yr.SQ)
+mod18 = update(mod17, .~. + region:hasemail)
+mod19= update(mod17, .~. + age.sq:allgames1yr.SQ:hasemail)
+mod20= update(mod17, .~. + age:age.sq:age.cu)
+mod21= update(mod17, .~. + mean.r:fastevents.SQ)
+mod22= update(mod17, .~. + intl:mean.r)
+mod23= update(mod17, .~. + intl:age.cu:age.sq)
+mod24= update(mod17, .~. + memmonths:intl)
+mod25= update(mod17,.~. + memmonths:hasemail:intl)
 
-#mod1 = update(mod16, .~. + allgames1yr.SQ:age.sq)
-mod2 = update(mod16, .~. + allgames1yr.SQ:age.cu)
-mod3 = update(mod16, .~. + allgames1yr.SQ:memmonths)
-mod4 = update(mod16, .~. + allgames1yr.SQ:memtype)
-mod5 = update(mod16, .~. + allgames1yr.SQ:mem_mag1)
-mod6 = update(mod16, .~. + allgames1yr.SQ:hasemail)
-mod7 = update(mod16, .~. + age.sq:age.sq)
-#mod8 = update(mod16, .~. + age.sq:age.cu)
-mod9 = update(mod16, .~. + age.sq:memmonths)
-mod10 = update(mod16, .~. + age.sq:memtype)
-mod11 = update(mod16, .~. + age.sq:mem_mag1)
-mod12 = update(mod16, .~. + age.sq:hasemail)
-mod13 = update(mod16, .~. + hasemail:memmonths)
-mod14 = update(mod16, .~. + hasemail:memtype)
-mod15 = update(mod16, .~. + hasemail:mem_mag1)
-#mod16 = update(mod16, .~. + region:age)
-mod17 = update(mod16, .~. + region:allgames1yr.SQ)
-mod18 = update(mod16, .~. + region:hasemail)
+anova(mod17,mod1,mod2,mod3,mod4,mod5,mod6,mod7,mod9,mod10,mod11,mod12,mod13,mod14,mod15,mod18,mod19,mod20,mod21,mod22,mod23,mod24,mod25,test="Chisq")
 
-anova(mod16,mod2,mod3,mod4,mod5,mod6,mod7,mod9,mod10,mod11,mod12,mod13,mod14,mod15,mod17,mod18,test="Chi")
- 
-modB = mod10
+
+mod1 = update(mod18, .~. + allgames1yr.SQ:age.sq)
+mod2 = update(mod18, .~. + allgames1yr.SQ:age.cu)
+mod3 = update(mod18, .~. + allgames1yr.SQ:memmonths)
+mod4 = update(mod18, .~. + allgames1yr.SQ:memtype)
+mod5 = update(mod18, .~. + allgames1yr.SQ:mem_mag1)
+mod6 = update(mod18, .~. + allgames1yr.SQ:hasemail)
+mod7 = update(mod18, .~. + age.sq:age.sq)
+#mod8 = update(mod18, .~. + age.sq:age.cu)
+mod9 = update(mod18, .~. + age.sq:memmonths)
+mod10 = update(mod18, .~. + age.sq:memtype)
+mod11 = update(mod18, .~. + age.sq:mem_mag1)
+mod12 = update(mod18, .~. + age.sq:hasemail)
+mod13 = update(mod18, .~. + hasemail:memmonths)
+mod14 = update(mod18, .~. + hasemail:memtype)
+mod15 = update(mod18, .~. + hasemail:mem_mag1)
+#mod16 = update(mod18, .~. + region:age)
+#mod17 = update(mod18, .~. + region:allgames1yr.SQ)
+#mod18 = update(mod18, .~. + region:hasemail)
+mod19= update(mod18, .~. + age.sq:allgames1yr.SQ:hasemail)
+mod20= update(mod18, .~. + age:age.sq:age.cu)
+mod21= update(mod18, .~. + mean.r:fastevents.SQ)
+mod22= update(mod18, .~. + intl:mean.r)
+mod23= update(mod18, .~. + intl:age.cu:age.sq)
+mod24= update(mod18, .~. + memmonths:intl)
+mod25= update(mod18,.~. + memmonths:hasemail:intl)
+
+anova(mod18,mod1,mod2,mod3,mod4,mod5,mod6,mod7,mod9,mod10,mod11,mod12,mod13,mod14,mod15,mod19,mod20,mod21,mod22,mod23,mod24,mod25,test="Chisq")
+
+#modC = update(mod18, .~. + allgames1yr.SQ:age.sq+ memtype:age.sq+hasemail:allgames1yr.SQ:age.sq + memmonths:hasemail:intl)
+#modB = mod10
 
 summary(modB) # glm(formula = lapsed ~ age + sex + region + memtype + memmonths + mem_mag1 + mem_mag2 + hasemail + r1 + r.quick + extra + intl + r3r2delta + r3quickdelta + mean.r + r1.na + r3.na + r.intl.na + allgames1yr.SQ + fastevents.SQ + medevents.SQ + r3quickdelta.sq + r3r2delta.sq + age.sq + age.cu + age.sq:age.cu + allgames1yr.SQ:age.sq + age:region + memtype:age.sq, family = binomial, data = train.na)
+summary(modC) # glm(formula = lapsed ~ age + sex + region + memtype + memmonths + mem_mag1 + mem_mag2 + hasemail + r1 + r.quick + extra + intl + r3r2delta + r3quickdelta + mean.r + r1.na + r3.na + r.intl.na + allgames1yr.SQ + fastevents.SQ + medevents.SQ + r3quickdelta.sq + r3r2delta.sq + age.sq + age.cu + age:region + age.sq:age.cu + region:allgames1yr.SQ + region:hasemail + allgames1yr.SQ:age.sq + memtype:age.sq + hasemail:allgames1yr.SQ:age.sq + memmonths:hasemail:intl, family = binomial, data = train.na))
 
-#modBfull = glm(formula = lapsed ~ age + sex + region + memtype + memmonths + mem_mag1 + mem_mag2 + hasemail + r1 + r.quick + extra + intl + r3r2delta + r3quickdelta + mean.r + r1.na + r3.na + r.intl.na + allgames1yr.SQ + fastevents.SQ + medevents.SQ + r3quickdelta.sq + r3r2delta.sq + age.sq + age.cu + age.sq:age.cu + allgames1yr.SQ:age.sq + age:region + memtype:age.sq, family = binomial, data = train.na)
-
+modB = glm(formula = lapsed ~ age + sex + region + memtype + memmonths + mem_mag1 + mem_mag2 + hasemail + r1 + r.quick + extra + intl + r3r2delta + r3quickdelta + mean.r + r1.na + r3.na + r.intl.na + allgames1yr.SQ + fastevents.SQ + medevents.SQ + r3quickdelta.sq + r3r2delta.sq + age.sq + age.cu + age.sq:age.cu + allgames1yr.SQ:age.sq + age:region + memtype:age.sq, family = binomial, data = train.na)
+modC = glm(formula = lapsed ~ age + sex + region + memtype + memmonths + mem_mag1 + mem_mag2 + hasemail + r1 + r.quick + extra + intl + r3r2delta + r3quickdelta + mean.r + r1.na + r3.na + r.intl.na + allgames1yr.SQ + fastevents.SQ + medevents.SQ + r3quickdelta.sq + r3r2delta.sq + age.sq + age.cu + age:region + age.sq:age.cu + region:allgames1yr.SQ + region:hasemail + allgames1yr.SQ:age.sq + memtype:age.sq + hasemail:allgames1yr.SQ:age.sq + memmonths:hasemail:intl, family = binomial, data = train.na)
+modD = gam(formula = lapsed ~ s(age) + sex + region + memtype + s(memmonths) + mem_mag1 + mem_mag2 + hasemail + s(r1) + s(r.quick) + extra + intl + s(r3r2delta) + s(r3quickdelta) + s(mean.r) + r1.na + r3.na + r.intl.na + s(allgames1yr.SQ) + s(fastevents.SQ) + s(medevents.SQ), family = binomial, data = train.na )
+summary(modD)
 # Plot Residuals (Jack Knife and Binned Avg.) - looking for non linearities
-sum((residuals(modBfull, type="deviance"))^2)
+sum((residuals(modD, type="deviance"))^2)
 par(mfrow = c(1,1))
-plot(modBfull$fitted.values, residuals(modBfull, type="deviance"),
+plot(modD$fitted.values, residuals(modD, type="deviance"),
      xlab="fitted probabilities",
      ylab="deviance residuals")
 
+
 library(arm)
-binnedplot(modBfull$fitted.values, rstudent(modBfull),
+binnedplot(modD$fitted.values, rstudent(modD),
            xlab="Averaged fitted probabilities",
            ylab="Averaged jackknifed residuals")
 
 # Cook's distance - want < 1
-plot(cooks.distance(modBfull), type="h",
+plot(cooks.distance(modD), type="h",
      xlab="Observation index",
      ylab="Cook's distances")
 
-which.max(cooks.distance(modB))
-train.na[7408,]
+which.max(cooks.distance(modC))
+train.na[9398,]
 
 # Process Validation Data
 # mark categorical data as factor
@@ -413,7 +472,6 @@ for(i in 1:nrow(test.na)){
   }
 }
 
-
 # Compute square roots
 test.na$allgames1yr.SQ = sqrt(test.na$allgames1yr)
 test.na$allgames5yr.SQ = sqrt(test.na$allgames5yr)
@@ -435,10 +493,14 @@ discrepancy = function (y,phat) {
 }
 
 #Predict on test set
-preds = predict(modBfull, newdata = test.na, type = "response" )
+preds = predict(modD, newdata = valid.na, type = "response" )
 
 discrepancy(valid.na$lapsed,preds)
 
 #mod = 0.553
-#modB = 0.550
-prediction = write.csv(x = preds,file = "predictionsmodbfull.csv")
+#modB = 0.5501
+#modC = 0.5548532
+#modD = 0.5497
+prediction = write.csv(x = preds,file = "predictionsmodCfull.csv")
+
+
