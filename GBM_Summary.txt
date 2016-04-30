@@ -1,0 +1,28 @@
+Stochastic Gradient Boosting 
+
+43436 samples
+   42 predictor
+    2 classes: 'class0', 'class1' 
+
+No pre-processing
+Resampling: Cross-Validated (10 fold) 
+Summary of sample sizes: 39092, 39093, 39093, 39092, 39092, 39092, ... 
+Resampling results across tuning parameters:
+
+  interaction.depth  n.trees  Accuracy   Kappa    
+  1                   50      0.7067643  0.3451264
+  1                  100      0.7154897  0.3715888
+  1                  150      0.7183214  0.3809043
+  2                   50      0.7178380  0.3823232
+  2                  100      0.7237086  0.3993632
+  2                  150      0.7253663  0.4043257
+  3                   50      0.7210841  0.3928264
+  3                  100      0.7253894  0.4055807
+  3                  150      0.7264484  0.4089244
+
+Tuning parameter 'shrinkage' was held constant at a value of 0.1
+Tuning
+ parameter 'n.minobsinnode' was held constant at a value of 10
+Accuracy was used to select the optimal model using  the largest value.
+The final values used for the model were n.trees = 150, interaction.depth = 3, shrinkage =
+ 0.1 and n.minobsinnode = 10. 
